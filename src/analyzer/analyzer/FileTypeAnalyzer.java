@@ -57,19 +57,29 @@ public class FileTypeAnalyzer {
         return result;
     }
 
-    public static void parseFileTypes(@NotNull final String patternsFileName) {
+    public static FileType[] parseFileTypes(@NotNull final String patternsFileName) {
+
+        FileType[] fileTypes = null;
 
         try (InputStream input = new BufferedInputStream(
                 new FileInputStream(patternsFileName)
         )) {
 
-            String[] fileTypesLines = new String(input.readAllBytes()).split("\n");
+            final String[] fileTypesLines = new String(input.readAllBytes()).split("\n");
             Arrays.sort(fileTypesLines, Collections.reverseOrder());
+
+            fileTypes = new FileType[fileTypesLines.length];
+            for(int i = 0; i < fileTypes.length; i++) {
+                fileTypes[i] = parseFileType(fileTypesLines[i]);
+            }
 
         } catch (IOException exc) {
             exc.printStackTrace();
         }
+
+        return fileTypes;
     }
+
     private static FileType parseFileType(@NotNull final String line) {
         final String[] fileTypeFields = line.split(";");
         fileTypeFields[1] = fileTypeFields[1].substring(1, fileTypeFields[1].length() - 1);
