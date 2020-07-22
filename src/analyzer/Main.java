@@ -20,14 +20,13 @@ public class Main {
 
         final String folderName = args[0];
         final String pattern = args[1];
-        final String returnType = args[2];
 
         List<IsFileTypeFound> results = isTypeFound(folderName, pattern);
 
         for (IsFileTypeFound r : results) {
             System.out.printf("%s: %s\n",
                     r.getFileName(),
-                    r.isTypeFound() ? returnType : "Unknown file type");
+                    r.isTypeFound() ? "File type" : "Unknown file type");
         }
     }
 }
