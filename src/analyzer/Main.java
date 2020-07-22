@@ -7,7 +7,7 @@ import static analyzer.FileTypeAnalyzer.isTypeFound;
 public class Main {
 
     public static void main(String[] args) {
-        if (args.length < 4) {
+        if (args.length < 3) {
             System.out.println("Please provide four arguments:\n" +
                     "the algorithm,\n" +
                     "the file to check (relative path),\n" +
@@ -24,7 +24,7 @@ public class Main {
         List<IsFileTypeFound> results = isTypeFound(algName, folderName, pattern);
 
         for (IsFileTypeFound r : results) {
-            System.out.printf("%s: %s",
+            System.out.printf("%s: %s\n",
                     r.getFileName(),
                     r.isTypeFound() ? returnType : "Unknown file type");
         }
