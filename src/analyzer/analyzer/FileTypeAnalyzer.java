@@ -56,4 +56,18 @@ public class FileTypeAnalyzer {
         executor.shutdown();
         return result;
     }
+
+    public static void parseFileTypes(@NotNull final String patternsFileName) {
+
+        try (InputStream input = new BufferedInputStream(
+                new FileInputStream(patternsFileName)
+        )) {
+
+            String[] fileTypesLines = new String(input.readAllBytes()).split("\n");
+            Arrays.sort(fileTypesLines, Collections.reverseOrder());
+
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        }
+    }
 }
