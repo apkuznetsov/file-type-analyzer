@@ -15,8 +15,7 @@ import static analyzer.algs.KnuthMorrisPrattAlg.searchOccurrencesByKmpAlg;
 
 public class FileTypeAnalyzer {
 
-    public static List<IsFileTypeFound> isTypeFound(@NotNull final String algName,
-                                                    @NotNull final String folderName,
+    public static List<IsFileTypeFound> isTypeFound(@NotNull final String folderName,
                                                     @NotNull final String pattern) {
 
         final ExecutorService executor = Executors.newCachedThreadPool();
@@ -34,11 +33,7 @@ public class FileTypeAnalyzer {
 
                             String fileContent = new String(input.readAllBytes());
 
-                            if (algName.equals("--naive")) {
-                                isTypeFound = fileContent.contains(pattern);
-                            } else if (algName.equals("--KMP")) {
-                                isTypeFound = searchOccurrencesByKmpAlg(fileContent, pattern).size() > 0;
-                            }
+                            isTypeFound = searchOccurrencesByKmpAlg(fileContent, pattern).size() > 0;
 
                         } catch (IOException exc) {
                             exc.printStackTrace();
