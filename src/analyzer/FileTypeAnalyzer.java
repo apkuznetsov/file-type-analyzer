@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import static analyzer.KnuthMorrisPrattAlg.searchOccurrencesByKmpAlg;
+import static analyzer.algs.KnuthMorrisPrattAlg.searchOccurrencesByKmpAlg;
 
 public class FileTypeAnalyzer {
 
