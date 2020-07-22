@@ -3,9 +3,7 @@ package analyzer.analyzer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,8 +13,8 @@ import static analyzer.algs.KnuthMorrisPrattAlg.searchOccurrencesByKmpAlg;
 
 public class FileTypeAnalyzer {
 
-    public static List<IsFileTypeFound> isTypeFound(@NotNull final String folderName,
-                                                    @NotNull final String pattern) {
+    public static List<IsFileTypeFound> analyze(@NotNull final String patternsFileName,
+                                                @NotNull final String folderName) {
 
         final ExecutorService executor = Executors.newCachedThreadPool();
         final File[] files = new File(folderName).listFiles();
@@ -26,6 +24,7 @@ public class FileTypeAnalyzer {
             futures.add(
                     executor.submit(() -> {
                         boolean isTypeFound = false;
+                        String typeName = "";
 
                         try (InputStream input = new BufferedInputStream(
                                 new FileInputStream(file)
@@ -33,13 +32,20 @@ public class FileTypeAnalyzer {
 
                             String fileContent = new String(input.readAllBytes());
 
-                            isTypeFound = searchOccurrencesByKmpAlg(fileContent, pattern).size() > 0;
+                            FileType[] fileTypes = parseFileTypesPrioritySorted(patternsFileName);
+                            for (FileType type : fileTypes) {
+                                isTypeFound = searchOccurrencesByKmpAlg(fileContent, type.getPattern()).size() > 0;
+                                if (isTypeFound) {
+                                    typeName = type.getTypeName();
+                                    break;
+                                }
+                            }
 
                         } catch (IOException exc) {
                             exc.printStackTrace();
                         }
 
-                        return new IsFileTypeFound(file.getName(), isTypeFound);
+                        return new IsFileTypeFound(file.getName(), typeName);
                     })
             );
         }
@@ -57,7 +63,7 @@ public class FileTypeAnalyzer {
         return result;
     }
 
-    public static FileType[] parseFileTypes(@NotNull final String patternsFileName) {
+    private static FileType[] parseFileTypesPrioritySorted(@NotNull final String patternsFileName) {
 
         FileType[] fileTypes = null;
 
@@ -69,7 +75,7 @@ public class FileTypeAnalyzer {
             Arrays.sort(fileTypesLines, Collections.reverseOrder());
 
             fileTypes = new FileType[fileTypesLines.length];
-            for(int i = 0; i < fileTypes.length; i++) {
+            for (int i = 0; i < fileTypes.length; i++) {
                 fileTypes[i] = parseFileType(fileTypesLines[i]);
             }
 
