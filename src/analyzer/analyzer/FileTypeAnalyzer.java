@@ -70,4 +70,11 @@ public class FileTypeAnalyzer {
             exc.printStackTrace();
         }
     }
+    private static FileType parseFileType(@NotNull final String line) {
+        final String[] fileTypeFields = line.split(";");
+        fileTypeFields[1] = fileTypeFields[1].substring(1, fileTypeFields[1].length() - 1);
+        fileTypeFields[2] = fileTypeFields[2].substring(1, fileTypeFields[2].length() - 1);
+
+        return new FileType(Integer.parseInt(fileTypeFields[0]), fileTypeFields[1], fileTypeFields[2]);
+    }
 }
