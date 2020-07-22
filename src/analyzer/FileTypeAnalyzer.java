@@ -9,15 +9,17 @@ import java.io.InputStream;
 
 public class FileTypeAnalyzer {
 
-    public static void analyze(@NotNull String algName, @NotNull String fileName,
-                               @NotNull String pattern, @NotNull String returnType) {
+    public static boolean isTypeFound(@NotNull final String algName,
+                                      @NotNull final String fileName,
+                                      @NotNull final String pattern) {
+
+        boolean isTypeFound = false;
 
         try (InputStream input = new BufferedInputStream(
                 new FileInputStream(fileName)
         )) {
 
             String fileContent = new String(input.readAllBytes());
-            boolean isTypeFound = false;
 
             if (algName.equals("--naive")) {
                 isTypeFound = fileContent.contains(pattern);
@@ -25,14 +27,10 @@ public class FileTypeAnalyzer {
                 isTypeFound = KnuthMorrisPrattAlg.searchOccurrencesByKmpAlg(fileContent, pattern).size() > 0;
             }
 
-            if (isTypeFound) {
-                System.out.println(returnType);
-            } else {
-                System.out.println("Unknown file type");
-            }
-
         } catch (IOException exc) {
             exc.printStackTrace();
         }
+
+        return isTypeFound;
     }
 }

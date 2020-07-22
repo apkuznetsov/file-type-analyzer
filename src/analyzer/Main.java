@@ -1,5 +1,7 @@
 package analyzer;
 
+import static analyzer.FileTypeAnalyzer.isTypeFound;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -12,11 +14,15 @@ public class Main {
             System.exit(0);
         }
 
-        String algName = "--KMP";
-        String fileName = args[0];
-        String pattern = args[1];
-        String returnType = args[2];
+        final String algName = "--KMP";
+        final String fileName = args[0];
+        final String pattern = args[1];
+        final String returnType = args[2];
 
-        FileTypeAnalyzer.analyze(algName, fileName, pattern, returnType);
+        if (isTypeFound(algName, fileName, pattern)) {
+            System.out.println(returnType);
+        } else {
+            System.out.println("Unknown file type");
+        }
     }
 }
