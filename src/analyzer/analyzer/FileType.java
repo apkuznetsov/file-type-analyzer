@@ -6,12 +6,12 @@ public class FileType {
 
     private final int priority;
     private final String pattern;
-    private final String type;
+    private final String typeName;
 
-    public FileType(int priority, @NotNull String pattern, @NotNull String type) {
+    public FileType(int priority, @NotNull String pattern, @NotNull String typeName) {
         this.priority = priority;
         this.pattern = pattern;
-        this.type = type;
+        this.typeName = typeName;
     }
 
     public int getPriority() {
@@ -22,7 +22,7 @@ public class FileType {
         return pattern;
     }
 
-    public String getType() {
-        return type;
+    public String getTypeName() {
+        return typeName;
     }
 }
