@@ -2,6 +2,7 @@
   <dictionary name="ПК">
     <words>
       <w>nanos</w>
+      <w>subarrays</w>
     </words>
   </dictionary>
 </component>
