@@ -1,4 +1,4 @@
-package analyzer;
+package analyzer.analyzer;
 
 import org.jetbrains.annotations.NotNull;
 

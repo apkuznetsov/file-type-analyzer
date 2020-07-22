@@ -1,8 +1,10 @@
 package analyzer;
 
+import analyzer.analyzer.IsFileTypeFound;
+
 import java.util.List;
 
-import static analyzer.FileTypeAnalyzer.isTypeFound;
+import static analyzer.analyzer.FileTypeAnalyzer.isTypeFound;
 
 public class Main {
 
