@@ -5,18 +5,18 @@ import org.jetbrains.annotations.NotNull;
 public class IsFileTypeFound {
 
     private final String fileName;
-    private final boolean isTypeFound;
+    private final String typeName;
 
-    public IsFileTypeFound(@NotNull String fileName, boolean isTypeFound) {
+    public IsFileTypeFound(@NotNull String fileName, @NotNull String typeName) {
         this.fileName = fileName;
-        this.isTypeFound = isTypeFound;
+        this.typeName = typeName;
     }
 
     public String getFileName() {
         return fileName;
     }
 
-    public boolean isTypeFound() {
-        return isTypeFound;
+    public String getTypeName() {
+        return typeName;
     }
 }
