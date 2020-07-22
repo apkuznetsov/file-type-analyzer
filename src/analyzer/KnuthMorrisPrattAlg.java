@@ -11,7 +11,7 @@ public class KnuthMorrisPrattAlg {
     List<Integer> searchOccurrencesByKmpAlg(@NotNull String text, @NotNull String pattern) {
 
         int[] prefixFunc = calcPrefixFunc(pattern);
-        ArrayList<Integer> occurrences = new ArrayList<Integer>();
+        ArrayList<Integer> occurrences = new ArrayList<>();
 
         int patternIndex = 0;
         for (int textIndex = 0; textIndex < text.length(); textIndex++) {
