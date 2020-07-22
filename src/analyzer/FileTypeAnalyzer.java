@@ -19,22 +19,17 @@ public class FileTypeAnalyzer {
             String fileContent = new String(input.readAllBytes());
             boolean isTypeFound = false;
 
-            long startTime = System.nanoTime();
             if (algName.equals("--naive")) {
                 isTypeFound = fileContent.contains(pattern);
             } else if (algName.equals("--KMP")) {
                 isTypeFound = KnuthMorrisPrattAlg.searchOccurrencesByKmpAlg(fileContent, pattern).size() > 0;
             }
-            long elapsedNanos = System.nanoTime() - startTime;
-
 
             if (isTypeFound) {
                 System.out.println(returnType);
             } else {
                 System.out.println("Unknown file type");
             }
-            double elapsedTimeInSecond = (double) elapsedNanos / 1_000_000_000;
-            System.out.println("It took " + elapsedTimeInSecond + " seconds");
 
         } catch (IOException exc) {
             exc.printStackTrace();
