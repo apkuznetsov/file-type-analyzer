@@ -4,29 +4,25 @@ import analyzer.analyzer.IsFileTypeFound;
 
 import java.util.List;
 
-import static analyzer.analyzer.FileTypeAnalyzer.isTypeFound;
+import static analyzer.analyzer.FileTypeAnalyzer.analyze;
 
 public class Main {
 
     public static void main(String[] args) {
-        if (args.length < 3) {
-            System.out.println("Please provide four arguments:\n" +
-                    "the algorithm,\n" +
-                    "the file to check (relative path),\n" +
-                    "the pattern string (P),\n" +
-                    "and the result string (R)");
+        if (args.length < 2) {
             System.exit(0);
         }
 
-        final String folderName = args[0];
-        final String pattern = args[1];
+        final String patternsFileName = args[0];
+        final String folderName = args[1];
 
-        List<IsFileTypeFound> results = isTypeFound(folderName, pattern);
+        List<IsFileTypeFound> results = analyze(patternsFileName, folderName);
 
         for (IsFileTypeFound r : results) {
             System.out.printf("%s: %s\n",
                     r.getFileName(),
-                    r.isTypeFound() ? "File type" : "Unknown file type");
+                    r.getTypeName().equals("") ? "Unknown file type" : r.getTypeName()
+            );
         }
     }
 }
