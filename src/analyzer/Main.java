@@ -17,10 +17,10 @@ public class Main {
             System.exit(0);
         }
 
-        String algName = args[0];
-        String fileName = args[1];
-        String pattern = args[2];
-        String returnType = args[3];
+        String algName = "--KMP";
+        String fileName = args[0];
+        String pattern = args[1];
+        String returnType = args[2];
 
         try (InputStream input = new BufferedInputStream(new FileInputStream(fileName))) {
             String fileContent = new String(input.readAllBytes());
