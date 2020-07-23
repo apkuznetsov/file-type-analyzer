@@ -16,39 +16,14 @@ public class FileTypeAnalyzer {
     public static List<FoundFile> analyze(@NotNull final String patternsFileName,
                                           @NotNull final String folderName) {
 
-        final ExecutorService executor = Executors.newCachedThreadPool();
         final File[] files = new File(folderName).listFiles();
+        final ExecutorService executor = Executors.newCachedThreadPool();
         final List<Future<FoundFile>> futures = new LinkedList<>();
+        FileType[] fileTypesPrioritySorted = parseFileTypesPrioritySorted(patternsFileName);
 
         for (File file : files) {
             futures.add(
-                    executor.submit(() -> {
-
-                        FileType foundFileType = null;
-
-                        try (InputStream input = new BufferedInputStream(
-                                new FileInputStream(file)
-                        )) {
-
-                            String fileContent = new String(input.readAllBytes());
-
-                            FileType[] fileTypes = parseFileTypesPrioritySorted(patternsFileName);
-
-                            boolean isTypeFound;
-                            for (FileType type : fileTypes) {
-                                isTypeFound = searchOccurrencesByKmpAlg(fileContent, type.getPattern()).size() > 0;
-                                if (isTypeFound) {
-                                    foundFileType = type;
-                                    break;
-                                }
-                            }
-
-                        } catch (IOException exc) {
-                            exc.printStackTrace();
-                        }
-
-                        return new FoundFile(file.getName(), foundFileType);
-                    })
+                    executor.submit(() -> findFileType(file, fileTypesPrioritySorted))
             );
         }
 
@@ -65,9 +40,35 @@ public class FileTypeAnalyzer {
         return result;
     }
 
+    private static FoundFile findFileType(@NotNull File file, @NotNull final FileType[] fileTypes) {
+        FileType foundFileType = null;
+
+        try (InputStream input = new BufferedInputStream(
+                new FileInputStream(file)
+        )) {
+
+            String fileContent = new String(input.readAllBytes());
+
+            boolean isTypeFound;
+            for (FileType type : fileTypes) {
+                isTypeFound = searchOccurrencesByKmpAlg(fileContent, type.getPattern()).size() > 0;
+                if (isTypeFound) {
+                    foundFileType = type;
+                    break;
+                }
+            }
+
+        } catch (IOException exc) {
+            foundFileType = null;
+            exc.printStackTrace();
+        }
+
+        return new FoundFile(file.getName(), foundFileType);
+    }
+
     private static FileType[] parseFileTypesPrioritySorted(@NotNull final String patternsFileName) {
 
-        FileType[] fileTypes = null;
+        FileType[] fileTypes;
 
         try (InputStream input = new BufferedInputStream(
                 new FileInputStream(patternsFileName)
@@ -82,6 +83,7 @@ public class FileTypeAnalyzer {
             }
 
         } catch (IOException exc) {
+            fileTypes = null;
             exc.printStackTrace();
         }
 

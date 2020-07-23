@@ -13,8 +13,8 @@ public class Main {
             System.exit(0);
         }
 
-        final String patternsFileName = args[0];
-        final String folderName = args[1];
+        final String patternsFileName = args[1];
+        final String folderName = args[0];
 
         List<FoundFile> results = analyze(patternsFileName, folderName);
 
