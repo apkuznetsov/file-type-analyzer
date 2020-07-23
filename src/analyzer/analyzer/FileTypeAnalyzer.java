@@ -27,15 +27,7 @@ public class FileTypeAnalyzer {
             );
         }
 
-        List<FoundFile> result = new ArrayList<>(futures.size());
-        for (Future<FoundFile> future : futures) {
-            try {
-                result.add(future.get());
-            } catch (InterruptedException | ExecutionException exc) {
-                exc.printStackTrace();
-            }
-        }
-
+        List<FoundFile> result = convertFuturesListToList(futures);
         executor.shutdown();
         return result;
     }
@@ -96,5 +88,19 @@ public class FileTypeAnalyzer {
         fileTypeFields[2] = fileTypeFields[2].substring(1, fileTypeFields[2].length() - 1);
 
         return new FileType(Integer.parseInt(fileTypeFields[0]), fileTypeFields[1], fileTypeFields[2]);
+    }
+
+    private static <T> List<T> convertFuturesListToList(List<Future<T>> futures) {
+        List<T> list = new ArrayList<>(futures.size());
+
+        for (Future<T> future : futures) {
+            try {
+                list.add(future.get());
+            } catch (InterruptedException | ExecutionException exc) {
+                exc.printStackTrace();
+            }
+        }
+
+        return list;
     }
 }
