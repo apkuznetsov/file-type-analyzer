@@ -23,8 +23,8 @@ public class FileTypeAnalyzer {
         for (File file : files) {
             futures.add(
                     executor.submit(() -> {
-                        boolean isTypeFound = false;
-                        String typeName = "";
+
+                        FileType foundFileType = null;
 
                         try (InputStream input = new BufferedInputStream(
                                 new FileInputStream(file)
@@ -33,10 +33,12 @@ public class FileTypeAnalyzer {
                             String fileContent = new String(input.readAllBytes());
 
                             FileType[] fileTypes = parseFileTypesPrioritySorted(patternsFileName);
+
+                            boolean isTypeFound;
                             for (FileType type : fileTypes) {
                                 isTypeFound = searchOccurrencesByKmpAlg(fileContent, type.getPattern()).size() > 0;
                                 if (isTypeFound) {
-                                    typeName = type.getTypeName();
+                                    foundFileType = type;
                                     break;
                                 }
                             }
@@ -45,7 +47,7 @@ public class FileTypeAnalyzer {
                             exc.printStackTrace();
                         }
 
-                        return new FoundFile(file.getName(), typeName);
+                        return new FoundFile(file.getName(), foundFileType);
                     })
             );
         }

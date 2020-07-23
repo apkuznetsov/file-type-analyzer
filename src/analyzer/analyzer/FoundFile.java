@@ -5,11 +5,11 @@ import org.jetbrains.annotations.NotNull;
 public class FoundFile {
 
     private final String fileName;
-    private final String typeName;
+    private final FileType fileType;
 
-    public FoundFile(@NotNull String fileName, @NotNull String typeName) {
+    public FoundFile(@NotNull String fileName, FileType fileType) {
         this.fileName = fileName;
-        this.typeName = typeName;
+        this.fileType = fileType;
     }
 
     public String getFileName() {
@@ -17,6 +17,10 @@ public class FoundFile {
     }
 
     public String getTypeName() {
-        return typeName;
+        if (fileType == null) {
+            return null;
+        }
+
+        return fileType.getTypeName();
     }
 }

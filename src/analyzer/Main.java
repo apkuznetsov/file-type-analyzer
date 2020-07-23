@@ -21,7 +21,7 @@ public class Main {
         for (FoundFile r : results) {
             System.out.printf("%s: %s\n",
                     r.getFileName(),
-                    r.getTypeName().equals("") ? "Unknown file type" : r.getTypeName()
+                    r.getTypeName() == null ? "Unknown file type" : r.getTypeName()
             );
         }
     }
