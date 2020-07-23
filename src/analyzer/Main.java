@@ -1,6 +1,6 @@
 package analyzer;
 
-import analyzer.analyzer.IsFileTypeFound;
+import analyzer.analyzer.FoundFile;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ public class Main {
         final String patternsFileName = args[0];
         final String folderName = args[1];
 
-        List<IsFileTypeFound> results = analyze(patternsFileName, folderName);
+        List<FoundFile> results = analyze(patternsFileName, folderName);
 
-        for (IsFileTypeFound r : results) {
+        for (FoundFile r : results) {
             System.out.printf("%s: %s\n",
                     r.getFileName(),
                     r.getTypeName().equals("") ? "Unknown file type" : r.getTypeName()

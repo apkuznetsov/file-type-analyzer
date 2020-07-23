@@ -2,12 +2,12 @@ package analyzer.analyzer;
 
 import org.jetbrains.annotations.NotNull;
 
-public class IsFileTypeFound {
+public class FoundFile {
 
     private final String fileName;
     private final String typeName;
 
-    public IsFileTypeFound(@NotNull String fileName, @NotNull String typeName) {
+    public FoundFile(@NotNull String fileName, @NotNull String typeName) {
         this.fileName = fileName;
         this.typeName = typeName;
     }

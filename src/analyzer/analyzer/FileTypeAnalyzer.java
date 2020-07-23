@@ -13,12 +13,12 @@ import static analyzer.algs.KnuthMorrisPrattAlg.searchOccurrencesByKmpAlg;
 
 public class FileTypeAnalyzer {
 
-    public static List<IsFileTypeFound> analyze(@NotNull final String patternsFileName,
-                                                @NotNull final String folderName) {
+    public static List<FoundFile> analyze(@NotNull final String patternsFileName,
+                                          @NotNull final String folderName) {
 
         final ExecutorService executor = Executors.newCachedThreadPool();
         final File[] files = new File(folderName).listFiles();
-        final List<Future<IsFileTypeFound>> futures = new LinkedList<>();
+        final List<Future<FoundFile>> futures = new LinkedList<>();
 
         for (File file : files) {
             futures.add(
@@ -45,13 +45,13 @@ public class FileTypeAnalyzer {
                             exc.printStackTrace();
                         }
 
-                        return new IsFileTypeFound(file.getName(), typeName);
+                        return new FoundFile(file.getName(), typeName);
                     })
             );
         }
 
-        List<IsFileTypeFound> result = new ArrayList<>(futures.size());
-        for (Future<IsFileTypeFound> future : futures) {
+        List<FoundFile> result = new ArrayList<>(futures.size());
+        for (Future<FoundFile> future : futures) {
             try {
                 result.add(future.get());
             } catch (InterruptedException | ExecutionException exc) {
