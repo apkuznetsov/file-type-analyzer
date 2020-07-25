@@ -13,59 +13,54 @@ import static analyzer.algs.KnuthMorrisPrattAlg.searchOccurrencesByKmpAlg;
 
 public class FileTypeAnalyzer {
 
-    public static List<IsFileTypeFound> analyze(@NotNull final String patternsFileName,
-                                                @NotNull final String folderName) {
+    public static List<FoundFile> analyze(@NotNull final String patternsFileName,
+                                          @NotNull final String folderName) {
 
-        final ExecutorService executor = Executors.newCachedThreadPool();
         final File[] files = new File(folderName).listFiles();
-        final List<Future<IsFileTypeFound>> futures = new LinkedList<>();
+        final ExecutorService executor = Executors.newCachedThreadPool();
+        final List<Future<FoundFile>> futures = new LinkedList<>();
+        FileType[] fileTypesPrioritySorted = parseFileTypesPrioritySorted(patternsFileName);
 
         for (File file : files) {
             futures.add(
-                    executor.submit(() -> {
-                        boolean isTypeFound = false;
-                        String typeName = "";
-
-                        try (InputStream input = new BufferedInputStream(
-                                new FileInputStream(file)
-                        )) {
-
-                            String fileContent = new String(input.readAllBytes());
-
-                            FileType[] fileTypes = parseFileTypesPrioritySorted(patternsFileName);
-                            for (FileType type : fileTypes) {
-                                isTypeFound = searchOccurrencesByKmpAlg(fileContent, type.getPattern()).size() > 0;
-                                if (isTypeFound) {
-                                    typeName = type.getTypeName();
-                                    break;
-                                }
-                            }
-
-                        } catch (IOException exc) {
-                            exc.printStackTrace();
-                        }
-
-                        return new IsFileTypeFound(file.getName(), typeName);
-                    })
+                    executor.submit(() -> findFileType(file, fileTypesPrioritySorted))
             );
         }
 
-        List<IsFileTypeFound> result = new ArrayList<>(futures.size());
-        for (Future<IsFileTypeFound> future : futures) {
-            try {
-                result.add(future.get());
-            } catch (InterruptedException | ExecutionException exc) {
-                exc.printStackTrace();
-            }
-        }
-
+        List<FoundFile> result = convertFuturesListToList(futures);
         executor.shutdown();
         return result;
     }
 
+    private static FoundFile findFileType(@NotNull File file, @NotNull final FileType[] fileTypes) {
+        FileType foundFileType = null;
+
+        try (InputStream input = new BufferedInputStream(
+                new FileInputStream(file)
+        )) {
+
+            String fileContent = new String(input.readAllBytes());
+
+            boolean isTypeFound;
+            for (FileType type : fileTypes) {
+                isTypeFound = searchOccurrencesByKmpAlg(fileContent, type.getPattern()).size() > 0;
+                if (isTypeFound) {
+                    foundFileType = type;
+                    break;
+                }
+            }
+
+        } catch (IOException exc) {
+            foundFileType = null;
+            exc.printStackTrace();
+        }
+
+        return new FoundFile(file.getName(), foundFileType);
+    }
+
     private static FileType[] parseFileTypesPrioritySorted(@NotNull final String patternsFileName) {
 
-        FileType[] fileTypes = null;
+        FileType[] fileTypes;
 
         try (InputStream input = new BufferedInputStream(
                 new FileInputStream(patternsFileName)
@@ -80,6 +75,7 @@ public class FileTypeAnalyzer {
             }
 
         } catch (IOException exc) {
+            fileTypes = null;
             exc.printStackTrace();
         }
 
@@ -92,5 +88,19 @@ public class FileTypeAnalyzer {
         fileTypeFields[2] = fileTypeFields[2].substring(1, fileTypeFields[2].length() - 1);
 
         return new FileType(Integer.parseInt(fileTypeFields[0]), fileTypeFields[1], fileTypeFields[2]);
+    }
+
+    private static <T> List<T> convertFuturesListToList(List<Future<T>> futures) {
+        List<T> list = new ArrayList<>(futures.size());
+
+        for (Future<T> future : futures) {
+            try {
+                list.add(future.get());
+            } catch (InterruptedException | ExecutionException exc) {
+                exc.printStackTrace();
+            }
+        }
+
+        return list;
     }
 }
